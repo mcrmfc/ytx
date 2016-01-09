@@ -1,0 +1,31 @@
+#!/usr/bin/env python
+# A simple native messaging host that receives url and plays in natvie app
+
+import struct
+import sys
+import subprocess
+
+# Thread that reads messages from the webapp.
+def read_thread_func(queue):
+  message_number = 0
+  while 1:
+    # Read the message length (first 4 bytes).
+    text_length_bytes = sys.stdin.read(4)
+
+    if len(text_length_bytes) == 0:
+      sys.exit(0)
+
+    # Unpack message length as 4 byte integer.
+    text_length = struct.unpack('i', text_length_bytes)[0]
+
+    # Read the text (JSON object) of the message.
+    text = sys.stdin.read(text_length).decode('utf-8')
+
+    subprocess.call(["/Applications/VLC.app/Contents/MacOS/VLC", 'http://www.youtube.com' + text[1:-1]])
+
+def Main():
+    read_thread_func(None)
+    sys.exit(0)
+
+if __name__ == '__main__':
+  Main()
