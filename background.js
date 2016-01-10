@@ -10,7 +10,7 @@ function onDisconnected() {
 }
 
 function connect() {
-    var hostName = "com.google.chrome.example.echo";
+    var hostName = "com.ytx.omxplayer";
     console.log("Connecting to native messaging host: " + hostName)
     port = chrome.runtime.connectNative(hostName);
     port.onDisconnect.addListener(onDisconnected);

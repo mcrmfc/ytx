@@ -4,6 +4,7 @@
 import struct
 import sys
 import subprocess
+from subprocess import check_output
 
 # Thread that reads messages from the webapp.
 def read_thread_func(queue):
@@ -21,7 +22,15 @@ def read_thread_func(queue):
     # Read the text (JSON object) of the message.
     text = sys.stdin.read(text_length).decode('utf-8')
 
-    subprocess.call(["/Applications/VLC.app/Contents/MacOS/VLC", 'http://www.youtube.com' + text[1:-1]])
+    # For debugging on osx
+    # text = check_output(['/usr/local/bin/youtube-dl', '-f', '18', '-g', 'http://www.youtube.com' + text[1:-1]])
+    # subprocess.call('/Applications/VLC.app/Contents/MacOS/VLC "'+ text.rstrip() + '"', shell=True)
+
+    # Get URL using youtube-dl
+    text = check_output(['youtube-dl', '-g', 'http://www.youtube.com' + text[1:-1]])
+
+    # Play using omxplayer
+    subprocess.call('lxterminal -e omxplayer -o hdmi "'+ text.rstrip() + '"', shell=True)
 
 def Main():
     read_thread_func(None)

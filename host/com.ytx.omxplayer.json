@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 {
-  "name": "com.google.chrome.example.echo",
+  "name": "com.ytx.omxplayer",
   "description": "Chrome Native Messaging API Example Host",
   "path": "HOST_PATH",
   "type": "stdio",
