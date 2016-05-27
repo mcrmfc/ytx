@@ -1,16 +1,27 @@
 var applyLinks = function() {
-    var link = '<a class="ytx" style="display: inline; background-color: red; color: blue;" href="#">YTX</a>'
-    $('a[href*="watch"]').each(function() {
-        $(this).parent().append(link);
-        $(this).parent().find('.ytx').click(function() {
-            var videoUrl = $(this).siblings('a').attr('href');
-            chrome.extension.sendRequest(videoUrl);
-        });
-    });
+    var elems = document.querySelectorAll('a[href*="watch"]')
+    for(i=0; i<elems.length; i++) {
+        (function(elem) {
+            var link_elem = document.createElement('a');
+            link_elem.style.cssText = "display: inline; background-color: red; color: blue;";
+            link_elem.className = 'ytx';
+            link_elem.href = '#';
+            link_elem.innerHTML = 'YTX'
+
+            elem.parentElement.appendChild(link_elem);
+            link_elem.addEventListener("click", function() {
+                var videoUrl = elem.getAttribute('href');
+                chrome.extension.sendRequest(videoUrl);
+            });
+        })(elems[i]);
+    }
 }
 
 var removeLinks = function() {
-    $('.ytx').remove();
+    var ytxs = document.getElementsByClassName('ytx');
+    while(ytxs[0]) {
+        ytxs[0].parentNode.removeChild(ytxs[0]);
+    }
 }
 
 var delayedExec = function(after, fn) {
@@ -22,18 +33,15 @@ var delayedExec = function(after, fn) {
 };
 
 var scrollStopper = delayedExec(500, function() {
-    console.log('stopped it');
     removeLinks();
     applyLinks();
 });
 
-// onload
-$(function() {
+// dom ready
+document.addEventListener("DOMContentLoaded", function() {
     applyLinks();
     chrome.extension.sendRequest('connect');
 });
 
 // onscroll
-$(document).scroll(function(){
-    scrollStopper();
-});
+document.addEventListener('scroll', scrollStopper);
